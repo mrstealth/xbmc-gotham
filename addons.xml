@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="plugin.video.unified.search" name="Unified search" version="1.0.1" provider-name="MrStealth">
+<addon id="plugin.video.unified.search" name="Unified search" version="1.0.0" provider-name="MrStealth">
   <requires>
     <import addon="xbmc.python" version="2.1.0" />
     <import addon="script.module.xbmc.helpers" version="1.0.0"/>
@@ -30,11 +30,11 @@
 	</extension>
 </addon>
 
-<addon id='script.module.favorites' version='1.0.0' name='Favorites for xbmc plugins' provider-name='MrStealth'>
+<addon id='script.module.favorites' name='Favorites for xbmc plugins' provider-name='MrStealth' version='1.0.0'>
   <requires>
     <import addon="xbmc.python" version="2.1.0" />
   </requires>
-  <extension point='xbmc.service' library="default.py" />
+  <extension library="default.py" point='xbmc.python.pluginsource' />
   <extension point='xbmc.addon.metadata'>
     <platform>all</platform>
     <summary lang='en'>Favorites for xbmc plugins.</summary>
