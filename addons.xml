@@ -17,7 +17,22 @@
     </extension>
 </addon>
 
-<addon id="plugin.video.mrstealth.serialu.net" name="[B][COLOR CFFFFFFF]Serialu.net[/COLOR][/B]" version="2.0.0" provider-name="MrStealth">
+<addon id="plugin.video.mrstealth.fepcom.net" name="Fepcom.net (UnifiedSearch)" version="2.0.0" provider-name="mrstealth">
+  <requires>
+    <import addon="xbmc.python" version="2.0"/>
+    <import addon="script.module.xbmc.helpers" version="2.0.1"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" provides="video" library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>Fepcom.net</summary>
+    <description>For personal use only</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="plugin.video.mrstealth.serialu.net" name="[B][COLOR CFFFFFFF]Serialu.net[/COLOR][/B]" version="2.0.0" provider-name="mrstealth">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.xbmc.helpers" version="1.0.0"/>
@@ -34,7 +49,7 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.online-life.ru" name="Online-life.ru (UnifiedSearch)" version="2.0.0" provider-name="MrStealth">
+<addon id="plugin.video.online-life.ru" name="Online-life.ru (UnifiedSearch)" version="2.0.0" provider-name="mrstealth">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.xbmc.helpers" version="1.0.0"/>
@@ -68,7 +83,7 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.videokub.com" name="VideoKub.com" version="1.0.0" provider-name="MrStealth">
+<addon id="plugin.video.videokub.com" name="VideoKub.com" version="2.0.0" provider-name="mrstealth">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
         <import addon="script.module.xbmc.helpers" version="1.0.0"/>
