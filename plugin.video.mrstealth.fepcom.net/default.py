@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Writer (c) 2012, MrStealth
-# Rev. 1.0.3
+# Rev. 2.0.0
 # -*- coding: utf-8 -*-
 
 import os
@@ -123,7 +123,7 @@ class Fepcom():
                     item.setInfo(type='Video', infoLabels={'title': title, 'genre': rating, 'plot': short_post_text, 'rating': 0})
                     xbmcplugin.addDirectoryItem(self.handle, uri, item, True)
 
-                except IndexError: 
+                except IndexError:
                     print "IndexError"
 
             if navigation and not items < 40:
@@ -172,11 +172,11 @@ class Fepcom():
             self.showErrorMessage("getCategoryItems(): Bad response status%s" % response["status"])
 
         xbmc.executebuiltin('Container.SetViewMode(52)')
-        xbmcplugin.endOfDirectory(self.handle, True)      
+        xbmcplugin.endOfDirectory(self.handle, True)
 
     def getFilmInfo(self, url):
         print "*** getFilmInfo %s" % url
-        
+
         response = common.fetchPage({"link": url})
 
         content = common.parseDOM(response["content"], "div", attrs={"id": "dle-content"})
@@ -199,10 +199,10 @@ class Fepcom():
 
             uri = sys.argv[0] + '?mode=play&url=%s' % uppod_url
             info = {'title': title, 'overlay': xbmcgui.ICON_OVERLAY_WATCHED, 'playCount': 0}
-            
+
             if len(players) > 1:
                 item = xbmcgui.ListItem("%s (source %i)" % (title, i+1), thumbnailImage=image)
-            else: 
+            else:
                  item = xbmcgui.ListItem("%s" % title, thumbnailImage=image)
 
             item.setInfo(type='Video', infoLabels=info)
@@ -264,7 +264,7 @@ class Fepcom():
 
     def search(self, keyword, unified):
         self.log("*** Search: unified %s" % unified)
-        
+
         keyword = translit.rus(keyword) if unified else self.getUserInput()
         unified_search_results = []
 
@@ -290,7 +290,7 @@ class Fepcom():
                 "subaction":    "search",
                 "titleonly":    "3"
             }
-           
+
             headers = {
                 "Host" : "fepcom.net",
                 "Referer" : 'http://fepcom.net/index.php?do=search',
