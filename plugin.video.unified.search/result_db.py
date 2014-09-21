@@ -2,7 +2,7 @@
 # Writer (c) 2012, MrStealth
 # Rev. 1.1.1
 # License: Attribution-NonCommercial-ShareAlike 3.0 Unported (CC BY-NC-SA 3.0)
-# -*- coding: utf-8 -*- 
+# -*- coding: utf-8 -*-
 
 import os
 import sqlite3 as sqlite
@@ -18,6 +18,17 @@ class ResultDB:
         self.connect()
 
     def connect(self):
+
+        # Create directory if not exist
+        basedir = os.path.dirname(self.filename)
+        if not os.path.exists(basedir):
+            os.makedirs(basedir)
+
+        # Create DB file if not exist
+        if not os.path.isfile(self.filename):
+            print "Create new sqlite file %s" % self.filename
+            open(self.filename, 'w').close()
+
         # Try to avoid => OperationalError: database is locked
         self.db = sqlite.connect(self.filename, timeout=1000, check_same_thread = False)
         self.db.text_factory = str
