@@ -1,0 +1,3 @@
+﻿<settings>
+    <setting label="Playback token" type="text" id="token" default=""/>
+</settings>
