@@ -6,13 +6,20 @@
     <import addon="script.module.xbmc.helpers" version="1.0.0"/>
     <import addon="script.module.translit" version="1.0.0"/>
   </requires>
-  <extension point="xbmc.python.pluginsource" provides="video" library="default.py">
+  <extension point="xbmc.python.pluginsource" library="default.py">
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary>Unified search</summary>
     <description>This addon can find any videos in your plugin collection, which supports unified search (For personal use only)</description>
+    <disclaimer lang="en"></disclaimer>
+    <language></language>
     <platform>all</platform>
+    <license></license>
+    <forum></forum>
+    <website></website>
+    <email></email>
+    <source></source>
   </extension>
 </addon>
 
@@ -34,12 +41,12 @@
   <requires>
     <import addon="xbmc.python" version="2.1.0" />
   </requires>
-  <extension library="default.py" point='xbmc.python.pluginsource' />
-  <extension point='xbmc.addon.metadata'>
+  <extension library="default.py" point="xbmc.service" />
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">Favorites for xbmc plugins</summary>
     <platform>all</platform>
-    <summary lang='en'>Favorites for xbmc plugins.</summary>
   </extension>
-  <extension point='xbmc.python.module' library='lib' />
+  <extension point="xbmc.python.module" library="lib"/>
 </addon>
 
 <addon id='script.module.translit' version='1.0.0' name='Translit for xbmc plugins' provider-name='MrStealth'>
