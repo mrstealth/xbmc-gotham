@@ -2,9 +2,9 @@
 <addon id="plugin.video.mrstealth.fepcom.net" name="Fepcom.net (UnifiedSearch)" version="2.0.0" provider-name="mrstealth">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.xbmc.helpers" version="1.0.0"/>
-    <import addon="script.module.translit" version="1.0.0"/>
-    <import addon="script.module.favorites" version="1.0.0"/>
+    <import addon="script.module.xbmc.helpers" version="2.0.0"/>
+    <import addon="script.module.translit" version="2.0.0"/>
+    <import addon="script.module.favorites" version="2.0.0"/>
   </requires>
   <extension point="xbmc.python.pluginsource" library="default.py">
     <provides>video</provides>
