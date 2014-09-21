@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.unified.search" name="Unified search" version="1.0.0" provider-name="MrStealth">
+<addon id="plugin.video.unified.search" name="Unified search" version="1.0.0" provider-name="mrstealth">
   <requires>
     <import addon="xbmc.python" version="2.1.0" />
     <import addon="script.module.xbmc.helpers" version="1.0.0"/>
@@ -12,12 +12,6 @@
     <summary>Unified search</summary>
     <description>This addon can find any videos in your plugin collection, which supports unified search (For personal use only)</description>
     <disclaimer lang="en"></disclaimer>
-    <language></language>
     <platform>all</platform>
-    <license></license>
-    <forum></forum>
-    <website></website>
-    <email></email>
-    <source></source>
   </extension>
 </addon>
