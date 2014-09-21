@@ -1,13 +1,13 @@
 #!/usr/bin/python
 # Writer (c) 2012, MrStealth
-# Rev. 1.2.9
+# Rev. 2.0.0
 # -*- coding: utf-8 -*-
 
 import urllib, re, sys
 import xbmc, xbmcplugin,xbmcgui,xbmcaddon
 import HTMLParser
 import XbmcHelpers
-import simplejson as json
+import json
 
 from urllib2 import Request, urlopen, URLError
 common = XbmcHelpers

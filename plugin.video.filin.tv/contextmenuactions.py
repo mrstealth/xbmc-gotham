@@ -3,7 +3,7 @@
 # -*- coding: utf-8 -*-
 
 import xbmc,xbmcaddon
-import simplejson as json
+import json
 
 __addon__    = xbmcaddon.Addon(id='plugin.video.filin.tv')
 _addon_icon    =__addon__.getAddonInfo('icon')
