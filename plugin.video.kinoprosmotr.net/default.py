@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Writer (c) 2012, MrStealth
-# Rev. 1.1.3
+# Rev. 2.0.1
 # -*- coding: utf-8 -*-
 
 import os
@@ -165,6 +165,7 @@ class Kinoprosmotr():
             infos = common.parseDOM(details, "li")
 
             image = common.parseDOM(poster, "img", ret="src")[0]
+            image = self.url+image
             year = infos[2].split('</span>')[-1]
 
             title = "%s (%s)" % (self.encode(common.parseDOM(infos[0], "strong")[0]), year)
@@ -176,7 +177,7 @@ class Kinoprosmotr():
                 url = values[2].replace('amp;file=', '').replace(' ', '')
 
                 uri = sys.argv[0] + '?mode=play&url=%s' % url
-                item = xbmcgui.ListItem(title,  thumbnailImage=image)
+                item = xbmcgui.ListItem(title,  iconImage=image)
                 item.setInfo(type='Video', infoLabels={'title': title, 'genre': genres, 'plot': desc, 'overlay': xbmcgui.ICON_OVERLAY_WATCHED, 'playCount': 0})
                 item.setProperty('IsPlayable', 'true')
                 xbmcplugin.addDirectoryItem(self.handle, uri, item, False)
@@ -201,7 +202,7 @@ class Kinoprosmotr():
                             for episode in episods:
                                 etitle = "%s (%s)" % (episode['comment'], common.stripTags(season['comment']))
                                 uri = sys.argv[0] + '?mode=play&url=%s' % episode['file']
-                                item = xbmcgui.ListItem(etitle, thumbnailImage=image)
+                                item = xbmcgui.ListItem(etitle, iconImage=image)
                                 info = {
                                     'title': title,
                                     'genre': genres,
@@ -220,7 +221,7 @@ class Kinoprosmotr():
                             url = episode['file']
 
                             uri = sys.argv[0] + '?mode=play&url=%s' % url
-                            item = xbmcgui.ListItem(etitle, thumbnailImage=image)
+                            item = xbmcgui.ListItem(etitle, iconImage=image)
                             info = {
                                 'title': title,
                                 'genre': genres,
@@ -252,7 +253,7 @@ class Kinoprosmotr():
 
         for i, title in enumerate(titles):
             uri = sys.argv[0] + '?mode=category&url=%s' % self.url + links[i]
-            item = xbmcgui.ListItem(self.encode(title), thumbnailImage=self.icon)
+            item = xbmcgui.ListItem(self.encode(title), iconImage=self.icon)
             xbmcplugin.addDirectoryItem(self.handle, uri, item, True)
 
         xbmcplugin.endOfDirectory(self.handle, True)
