@@ -32,11 +32,6 @@ common = XbmcHelpers
 import Translit as translit
 translit = translit.Translit(encoding='cp1251')
 
-# UnifiedSearch module
-try:
-    sys.path.append(os.path.dirname(__file__)+ '/../plugin.video.unified.search')
-    from unified_search import UnifiedSearch
-except: pass
 
 class VideoKub():
     def __init__(self):
@@ -204,7 +199,7 @@ class VideoKub():
                 print "Perform unified search and return results"
 
                 for i, title in enumerate(titles):
-                    # title = self.encode(title)
+                    title = self.encode(title)
                     unified_search_results.append({'title':  title, 'url': links[i], 'image': self.url + images[i], 'plugin': self.id})
 
                 UnifiedSearch().collect(unified_search_results)
