@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Writer (c) 2012, MrStealth
-# Rev. 2.0.1
+# Rev. 2.0.2
 # -*- coding: utf-8 -*-
 
 import os
@@ -121,7 +121,7 @@ class Kinoprosmotr():
                 genre = self.encode(', '.join(common.parseDOM(info[2], "a")))
                 year = info[1].split('</span>')[-1]
                 desc = common.stripTags(self.encode(descs[i]))
-                rating = self.calculateRating(ratings[i]) if self.calculateRating(ratings[i]) > 0 else None
+                rating = int(ratings[i])/10 if ratings[i] > 0 else None
 
                 try:
                     tmp = year.split(' ')
@@ -362,11 +362,6 @@ class Kinoprosmotr():
 
     def error(self, message):
         print "%s ERROR: %s" % (self.id, message)
-
-    def calculateRating(self, x):
-        rating = (int(x)*100)/150
-        xbmc_rating = (rating*10)/100
-        return xbmc_rating
 
     def showErrorMessage(self, msg):
         print msg
