@@ -245,6 +245,9 @@ class Fepcom():
 
     def playItem(self, url):
         print "*** play url %s" % url
+        if ' or ' in url: 
+            url = url.split(' or ')[-1]
+            
         item = xbmcgui.ListItem(path=url)
         xbmcplugin.setResolvedUrl(self.handle, True, item)
 
