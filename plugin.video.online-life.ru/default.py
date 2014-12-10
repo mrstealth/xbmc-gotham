@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Writer (c) 2012, MrStealth
-# Rev. 2.0.0
+# Rev. 2.0.1
 # -*- coding: utf-8 -*-
 
 import os
@@ -193,8 +193,11 @@ class OnlineLife():
         if movie:
             uri = sys.argv[0] + '?mode=play&url=%s' % urllib.quote_plus(movie)
 
+            overlay = xbmcgui.ICON_OVERLAY_WATCHED
             item = xbmcgui.ListItem(title, thumbnailImage=image)
-            item.setInfo(type='Video', infoLabels={'title': title, 'genre': genres, 'plot': common.stripTags(desc), 'overlay': xbmcgui.ICON_OVERLAY_WATCHED, 'playCount': 0})
+      
+            info = {"Title": title, 'genre' : genres, "Plot": common.stripTags(desc), "overlay": overlay, "playCount": 0}
+            item.setInfo( type='Video', infoLabels=info)
             item.setProperty('IsPlayable', 'true')
 
             xbmcplugin.addDirectoryItem(self.handle, uri, item, False)
@@ -203,6 +206,7 @@ class OnlineLife():
         elif season:
             print "This is a season %s" % season
             response = common.fetchPage({"link": season})
+            overlay = xbmcgui.ICON_OVERLAY_WATCHED
 
             if response["status"] == 200:
                 response = eval(response["content"].replace('\t', '').replace('\r\n', ''))
@@ -222,11 +226,11 @@ class OnlineLife():
                             uri = sys.argv[0] + '?mode=play&url=%s' % urllib.quote_plus(url)
                             item = xbmcgui.ListItem(etitle, thumbnailImage=image)
 
-                            labels = {'title': title, 'genre': 'genre', 'plot': 'desc', 'overlay': xbmcgui.ICON_OVERLAY_WATCHED, 'playCount': 0}
-                            item.setInfo(type='Video', infoLabels=labels)
-
+                            info = {"Title": title, 'genre' : 'genre', "Plot": desc, "overlay": overlay, "playCount": 0}
+                            item.setInfo( type='Video', infoLabels=info)
                             item.setProperty('IsPlayable', 'true')
                             xbmcplugin.addDirectoryItem(self.handle, uri, item, False)
+
                     xbmc.executebuiltin('Container.SetViewMode(51)')
 
                 else:
@@ -237,12 +241,13 @@ class OnlineLife():
 
                         uri = sys.argv[0] + '?mode=play&url=%s' % urllib.quote_plus(url)
                         item = xbmcgui.ListItem(etitle, thumbnailImage=image)
-
-                        labels = {'title': title, 'genre': 'genre', 'plot': 'desc', 'overlay': xbmcgui.ICON_OVERLAY_WATCHED, 'playCount': 0}
-
-                        item.setInfo(type='Video', infoLabels=labels)
+                        
+                        overlay = xbmcgui.ICON_OVERLAY_WATCHED
+                        info = {"Title": title, 'genre' : 'genre', "Plot": desc, "overlay": overlay, "playCount": 0}
+                        item.setInfo( type='Video', infoLabels=info)
                         item.setProperty('IsPlayable', 'true')
                         xbmcplugin.addDirectoryItem(self.handle, uri, item, False)
+
                     xbmc.executebuiltin('Container.SetViewMode(51)')
 
         xbmcplugin.endOfDirectory(self.handle, True)
@@ -325,56 +330,36 @@ class OnlineLife():
         unified_search_results = []
 
         if keyword:
-            url = 'http://www.online-life.ru/index.php?do=search'
-
-            # Advanced search: titles only
-            values = {
-                "beforeafter": "after",
-                "catlist[]": "0",
-                "do": "search",
-                "full_search": "1",
-                "replyless": "0",
-                "replylimit": "0",
-                "resorder": "desc",
-                "result_from":  "1",
-                "search_start": "1",
-                "searchdate": "0",
-                "searchuser": "",
-                "showposts": "0",
-                "sortby": "date",
-                "story": keyword,
-                "subaction": "search",
-                "titleonly": "3"
-            }
-
-            data = urllib.urlencode(values)
-            request = urllib2.Request(url, data)
+            url = 'http://go.mail.ru/search_site?fr=main&p=1&aux=Abd67k&q=%s&x=0&y=0' % keyword
+            request = urllib2.Request(url)
+            request.add_header('Referer', 'http://www.online-life.me/')
             response = urllib2.urlopen(request).read()
 
-            container = common.parseDOM(response, "div", attrs={"id": "container"})
-            posts = common.parseDOM(container, "div", attrs={"class": "custom-post"})
+            container = common.parseDOM(response, "ul", attrs={"class": "result js-result"})
+            posts = common.parseDOM(container, "li", attrs={"class": "result__li js-kb-wrap"})
+            results = common.parseDOM(posts, "div", attrs={"class": "result__img"})
+            titles = common.parseDOM(posts, "a", attrs={"class": "light-link"})
+            links = common.parseDOM(results, "a", ret="href")
+            images = common.parseDOM(results, "img", ret="src")
 
             if unified:
                 self.log("Perform unified search and return results")
 
-                for i, post in enumerate(posts):
-                    poster = common.parseDOM(post, "div", attrs={"class": "custom-poster"})
-                    title = self.encode(common.stripTags(common.parseDOM(post, "a")[0]))
-                    link = common.parseDOM(post, "a", ret="href")[0]
-                    image = common.parseDOM(post, "img", ret="src")[0]
-
+                for i, title in enumerate(titles):
+                    title = titles[i].encode('utf-8')
+                    link = links[i]
+                    image = images[i]
 
                     unified_search_results.append({'title':  title, 'url': link, 'image': image, 'plugin': self.id})
 
                 UnifiedSearch().collect(unified_search_results)
 
             else:
-                if posts:
-                    for i, post in enumerate(posts):
-                        poster = common.parseDOM(post, "div", attrs={"class": "custom-poster"})
-                        title = self.encode(common.stripTags(common.parseDOM(post, "a")[0]))
-                        link = common.parseDOM(post, "a", ret="href")[0]
-                        image = common.parseDOM(post, "img", ret="src")[0]
+                if results:
+                    for i, title in enumerate(titles):
+                        title = titles[i].encode('utf-8')
+                        link = links[i]
+                        image = images[i]
 
                         uri = sys.argv[0] + '?mode=show&url=%s' % link
                         item = xbmcgui.ListItem(title, thumbnailImage=image)
