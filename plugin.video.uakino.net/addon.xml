@@ -12,5 +12,6 @@
     <summary>Новинки кино, мультфильмы, сериалы</summary>
     <description>For personal use only</description>
     <platform>all</platform>
+    <broken>deprecated</broken>
   </extension>
 </addon>
