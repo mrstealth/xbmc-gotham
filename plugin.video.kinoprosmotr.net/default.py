@@ -7,6 +7,7 @@ import os
 import urllib
 import urllib2
 import sys
+import re
 import xbmc
 import xbmcplugin
 import xbmcgui
@@ -156,8 +157,20 @@ class Kinoprosmotr():
 
         if response["status"] == 200:
             movie = common.parseDOM(response["content"], "div", attrs={"class": "full_movie"})
-            film = common.parseDOM(movie, "param", ret="file")
-            values = common.parseDOM(movie, "param", ret="value")[4].split('&')
+            values = common.parseDOM(movie, "param", ret="value")
+            link = None
+
+            if values:
+                values = values[4].split('&')
+
+                for value in values:
+                    if 'file' in value:
+                        link = value.replace('amp;file=', '').replace(' ', '')
+            else:
+                self.showErrorMessage('No media source (YouTube trailer)')
+                return False
+
+
 
             poster = common.parseDOM(movie, "div", attrs={"class": "full_movie_poster"})
             description = common.parseDOM(movie, "div", attrs={"class": "full_movie_desc"})
@@ -172,7 +185,7 @@ class Kinoprosmotr():
             genres = self.encode((', ').join(common.parseDOM(infos[4], "a")))
             desc = common.stripTags(self.encode(description[0].split('<br>')[-1]))
 
-            if film:
+            if link:
                 self.log("This is a film")
                 url = values[2].replace('amp;file=', '').replace(' ', '')
 
@@ -355,6 +368,7 @@ class Kinoprosmotr():
         else:
             self.menu()
 
+
     # *** Add-on helpers
     def log(self, message):
         if self.debug:
@@ -369,6 +383,19 @@ class Kinoprosmotr():
 
     def encode(self, string):
         return string.decode('cp1251').encode('utf-8')
+
+
+class URLParser():
+    def parse(self, string):
+        links = re.findall(r'(?:http://|www.).*?["]', string)
+        return list(set(self.filter(links)))
+
+    def filter(self, links):
+        links = self.strip(links)
+        return [l for l in links if l.endswith('.mp4') or l.endswith('.mp4') or l.endswith('.txt')]
+
+    def strip(self, links):
+        return [l.replace('"', '') for l in links]
 
 kinoprosmotr = Kinoprosmotr()
 kinoprosmotr.main()

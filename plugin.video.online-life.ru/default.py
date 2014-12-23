@@ -169,23 +169,23 @@ class OnlineLife():
         title = self.encode(common.parseDOM(story, "span", attrs={"itemprop": "name"})[0])
         image = common.parseDOM(story, "img", attrs={"itemprop": "image"}, ret="src")[0]
 
-        scripts = common.parseDOM(content, "script", attrs={"type": "text/javascript"})
-
+        # scripts = common.parseDOM(content, "script", attrs={"type": "text/javascript"})
         itemprop_genre = common.parseDOM(story, "span", attrs={"itemprop": "genre"})
         genres = self.encode(', '.join(common.parseDOM(itemprop_genre, 'a')))
 
         desc = self.encode(common.parseDOM(story, "div", attrs={"style": "display:inline;"})[0])
 
-        parser = URLParser()
 
-        #for i, script in enumerate(scripts):
+        link = self.getVideoSource(sources[-1])
+
+        # for i, script in enumerate(scripts):
         #    print "%d #########" % i
         #    print script
 
-        try:
-            link = parser.parse(scripts[6])[0]
-        except IndexError:
-            link = parser.parse(scripts[7])[0]
+        # try:
+        #     link = parser.parse(scripts[8])[0]
+        # except IndexError:
+        #     link = parser.parse(scripts[9])[0]
 
         movie = link if not link.endswith('.txt') else None
         season = link if link.endswith('.txt') else None
@@ -195,7 +195,7 @@ class OnlineLife():
 
             overlay = xbmcgui.ICON_OVERLAY_WATCHED
             item = xbmcgui.ListItem(title, thumbnailImage=image)
-      
+
             info = {"Title": title, 'genre' : genres, "Plot": common.stripTags(desc), "overlay": overlay, "playCount": 0}
             item.setInfo( type='Video', infoLabels=info)
             item.setProperty('IsPlayable', 'true')
@@ -241,7 +241,7 @@ class OnlineLife():
 
                         uri = sys.argv[0] + '?mode=play&url=%s' % urllib.quote_plus(url)
                         item = xbmcgui.ListItem(etitle, thumbnailImage=image)
-                        
+
                         overlay = xbmcgui.ICON_OVERLAY_WATCHED
                         info = {"Title": title, 'genre' : 'genre', "Plot": desc, "overlay": overlay, "playCount": 0}
                         item.setInfo( type='Video', infoLabels=info)
@@ -251,6 +251,18 @@ class OnlineLife():
                     xbmc.executebuiltin('Container.SetViewMode(51)')
 
         xbmcplugin.endOfDirectory(self.handle, True)
+
+    def getVideoSource(self, url):
+        url = url.replace('//www.', 'http://')
+        request = urllib2.Request(url)
+        request.add_header('Referer', 'http://www.online-life.me/')
+        response = urllib2.urlopen(request).read()
+
+        # print response
+        return URLParser().parse(response)[0]
+
+
+
 
     def listGenres(self, url):
         response = common.fetchPage({"link": url})
