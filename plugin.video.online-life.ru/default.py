@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Writer (c) 2012, MrStealth
-# Rev. 2.0.1
+# Rev. 2.0.3
 # -*- coding: utf-8 -*-
 
 import os
@@ -169,18 +169,18 @@ class OnlineLife():
         title = self.encode(common.parseDOM(story, "span", attrs={"itemprop": "name"})[0])
         image = common.parseDOM(story, "img", attrs={"itemprop": "image"}, ret="src")[0]
 
-        # scripts = common.parseDOM(content, "script", attrs={"type": "text/javascript"})
+        sources = common.parseDOM(content, "script", attrs={"type": "text/javascript"}, ret="src")
         itemprop_genre = common.parseDOM(story, "span", attrs={"itemprop": "genre"})
         genres = self.encode(', '.join(common.parseDOM(itemprop_genre, 'a')))
 
         desc = self.encode(common.parseDOM(story, "div", attrs={"style": "display:inline;"})[0])
-
-
         link = self.getVideoSource(sources[-1])
 
         # for i, script in enumerate(scripts):
         #    print "%d #########" % i
-        #    print script
+
+        #    if 'www.online-life.me' in source:
+        #     print script
 
         # try:
         #     link = parser.parse(scripts[8])[0]
@@ -260,9 +260,6 @@ class OnlineLife():
 
         # print response
         return URLParser().parse(response)[0]
-
-
-
 
     def listGenres(self, url):
         response = common.fetchPage({"link": url})
