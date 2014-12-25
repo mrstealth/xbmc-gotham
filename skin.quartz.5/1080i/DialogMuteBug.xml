@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+  <include>OpenClose</include>
+  <controls>
+    <control type="image" id="901" description="Muted">
+      <top>-42</top>
+      <left>1672</left>
+      <width>318</width>
+      <height>306</height>
+      <bordersize>75</bordersize>
+	  <texture aligny="top" align="right">HUD/VolumeMuted.png</texture>
+	  <colordiffuse>HL</colordiffuse>
+    </control>
+  </controls>
+</window>

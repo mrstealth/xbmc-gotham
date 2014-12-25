@@ -48,6 +48,21 @@
   </extension>
 </addon>
 
+<addon id="plugin.video.1tv.ru" name="[COLOR=CAFFFFFF][B]Первый канал (TV)[/B][/COLOR]" version="2.0.0" provider-name="mrstealth">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.xbmc.helpers" version="2.0.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>XBMC add-on for http://www.1tv.ru/</summary>
+    <description>For personal use only</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
 <addon id="plugin.video.filin.tv" name="[B][COLOR CFFFFFFF]Filin.tv[/COLOR][/B]" version="2.0.0" provider-name="mrstealth">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
@@ -247,5 +262,23 @@
     <summary lang='en'>XbmcHelpers based on Parsedom module.</summary>
   </extension>
   <extension point='xbmc.python.module' library='lib' />
+</addon>
+
+<addon id="skin.quartz.5" version="5.0.0" name="Quartz" provider-name="Pecinko">
+  <requires>
+    <import addon="xbmc.gui" version="5.0.1"/>
+    <import addon="script.favourites" version="4.0.4"/>
+  </requires>
+  <extension
+    point="xbmc.gui.skin"
+    defaultthemename="Textures.xbt"
+    debugging="false">
+    <res width="1920" height="1080" aspect="16:9" default="true" folder="1080i" />
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <platform>all</platform>
+    <summary lang="en">Apple TV style skin</summary>
+    <description lang="en">Inspired by Apple TV interface Quartz brings easy to use, fast and flexible user interface. If you believe that sometimes less means more, you might feel right at home with Quartz. Skin graphics by CloudDweller and Pecinko.</description>
+  </extension>
 </addon>
 </addons>

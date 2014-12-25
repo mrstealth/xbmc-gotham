@@ -3,7 +3,7 @@ import xml.etree.ElementTree as XML
 
 for directory in os.listdir("."):
     if not directory.startswith('.'):
-        if 'plugin' in directory or 'script' in directory or 'repository' in directory:
+        if 'plugin' in directory or 'script' in directory or 'repository' in directory or 'skin' in directory:
             # Create plugin directory if not exist
             zip_dir = os.path.join(os.getcwd(), 'zip', directory)
             if not os.path.exists(zip_dir):
