@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Writer (c) 2012, MrStealth
-# Rev. 2.0.2
+# Rev. 2.0.3
 # -*- coding: utf-8 -*-
 
 import os
@@ -176,6 +176,8 @@ class NowFilms():
 
         movie = source.split('file":"')[-1].split('"};')[0] if 'file":"' in source else None
         playlist = source.split(',pl:"')[-1].split('"};')[0] if ',pl:"' in source else None
+        playlist = playlist.split('",')[0] if playlist and '",' in playlist else playlist
+
 
         title = self.encode(title)
         quality = quality[0] if quality else ''
