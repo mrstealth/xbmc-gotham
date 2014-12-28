@@ -48,21 +48,6 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.1tv.ru" name="[COLOR=CAFFFFFF][B]Первый канал (TV)[/B][/COLOR]" version="2.0.0" provider-name="mrstealth">
-  <requires>
-    <import addon="xbmc.python" version="2.1.0"/>
-    <import addon="script.module.xbmc.helpers" version="2.0.0"/>
-  </requires>
-  <extension point="xbmc.python.pluginsource" library="default.py">
-    <provides>video</provides>
-  </extension>
-  <extension point="xbmc.addon.metadata">
-    <summary>XBMC add-on for http://www.1tv.ru/</summary>
-    <description>For personal use only</description>
-    <platform>all</platform>
-  </extension>
-</addon>
-
 <addon id="plugin.video.filin.tv" name="[B][COLOR CFFFFFFF]Filin.tv[/COLOR][/B]" version="2.0.0" provider-name="mrstealth">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
@@ -125,6 +110,22 @@
   </extension>
   <extension point="xbmc.addon.metadata">
     <summary>Fepcom.net</summary>
+    <description>For personal use only</description>
+    <platform>all</platform>
+  </extension>
+</addon>
+
+<addon id="plugin.video.mrstealth.nowfilms.ru" name="NowFilms.ru (UnifiedSearch)" version="2.0.2" provider-name="MrStealth">
+  <requires>
+    <import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.xbmc.helpers" version="2.0.0"/>
+    <import addon="script.module.translit" version="2.0.0"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" provides="video" library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+    <summary>NowFilms.ru</summary>
     <description>For personal use only</description>
     <platform>all</platform>
   </extension>
