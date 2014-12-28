@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Writer (c) 2012, MrStealth
-# Rev. 2.0.3
+# Rev. 2.0.4
 # -*- coding: utf-8 -*-
 
 import os
@@ -91,6 +91,8 @@ class NowFilms():
         # xbmcplugin.addDirectoryItem(self.handle, uri, item, True)
 
         self.getCategoryItems(self.url, 1)
+
+        xbmc.executebuiltin('Container.SetViewMode(52)')
         xbmcplugin.endOfDirectory(self.handle, True)
 
     def getCategoryItems(self, url, page):
