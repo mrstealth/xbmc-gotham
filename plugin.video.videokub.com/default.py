@@ -20,7 +20,7 @@
 # */
 #
 # Writer (c) 2014, MrStealth
-# Rev. 1.0.5
+# Rev. 2.0.2
 
 import os, urllib, urllib2, sys #, socket, cookielib, errno
 import xbmc, xbmcplugin,xbmcgui,xbmcaddon
@@ -78,22 +78,25 @@ class VideoKub():
 
     def menu(self):
         uri = sys.argv[0] + '?mode=%s&url=%s' % ("search", self.url)
-        item = xbmcgui.ListItem("[COLOR=FF00FF00][%s][/COLOR]" % self.language(1000), thumbnailImage=self.icon)
+        item = xbmcgui.ListItem("[COLOR=FF00FF00][%s][/COLOR]" % self.language(1000), iconImage=self.icon, thumbnailImage=self.icon)
         xbmcplugin.addDirectoryItem(self.handle, uri, item, True)
 
         uri = sys.argv[0] + '?mode=%s&url=%s' % ("genres", self.url)
-        item = xbmcgui.ListItem("[COLOR=FF00FFF0]%s[/COLOR]" % self.language(1003), thumbnailImage=self.icon)
+        item = xbmcgui.ListItem("[COLOR=FF00FFF0]%s[/COLOR]" % self.language(1003), iconImage=self.icon, thumbnailImage=self.icon)
         xbmcplugin.addDirectoryItem(self.handle, uri, item, True)
 
         self.index('http://www.videokub.me/latest-updates/', 1)
         xbmcplugin.endOfDirectory(self.handle, True)
 
     def genres(self):
-        response = common.fetchPage({"link": self.url})
-        genres = common.parseDOM(response["content"], "ul", attrs={"class": "main"})
 
-        titles = common.parseDOM(genres, "a")[1:]
-        links = common.parseDOM(genres, "a", ret='href')[1:]
+        url = 'http://www.videokub.me/categories/'
+        response = common.fetchPage({"link": url})
+        block_content = common.parseDOM(response["content"], "div", attrs={"class": "block_content"})
+
+        titles = common.parseDOM(block_content, "a", attrs={"class": "hl"})
+        links = common.parseDOM(block_content, "a", attrs={"class": "hl"}, ret='href')
+        images = common.parseDOM(block_content, "img", attrs={"class": "thumb"}, ret='src')
 
         for i, title in enumerate(titles):
             if 'http' in links[i]:
@@ -102,7 +105,7 @@ class VideoKub():
                 link = self.url + links[i]
 
             uri = sys.argv[0] + '?mode=%s&url=%s' % ("index", link)
-            item = xbmcgui.ListItem(title, thumbnailImage=self.icon)
+            item = xbmcgui.ListItem(title, iconImage=images[i], thumbnailImage=images[i])
             xbmcplugin.addDirectoryItem(self.handle, uri, item, True)
 
 
@@ -127,7 +130,7 @@ class VideoKub():
             duration = durations[i].split(':')[0]
 
             uri = sys.argv[0] + '?mode=show&url=%s' % links[i]
-            item = xbmcgui.ListItem("%s [COLOR=55FFFFFF](%s)[/COLOR]" % (title, durations[i]), iconImage=images[i])
+            item = xbmcgui.ListItem("%s [COLOR=55FFFFFF](%s)[/COLOR]" % (title, durations[i]), iconImage=images[i], thumbnailImage=images[i])
             item.setInfo(type='Video', infoLabels={'title': title, 'genre': durations[i], 'duration': duration})
             xbmcplugin.addDirectoryItem(self.handle, uri, item, True)
 
@@ -159,7 +162,7 @@ class VideoKub():
         # 'http://www.videokub.me/search/?q=%s' % (search_string[0] + ' ' + search_string[1])
 
         uri = sys.argv[0] + '?mode=play&url=%s' % link
-        item = xbmcgui.ListItem(title, thumbnailImage=self.icon)
+        item = xbmcgui.ListItem(title, thumbnailImage=self.icon, iconImage=self.icon)
         item.setInfo(type='Video', infoLabels={'title': title, 'overlay': xbmcgui.ICON_OVERLAY_WATCHED, 'playCount': 0})
         item.setProperty('IsPlayable', 'true')
         xbmcplugin.addDirectoryItem(self.handle, uri, item, False)
