@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Writer (c) 2012, MrStealth
-# Rev. 2.0.3
+# Rev. 2.0.4
 # -*- coding: utf-8 -*-
 
 import os
@@ -169,12 +169,12 @@ class OnlineLife():
         title = self.encode(common.parseDOM(story, "span", attrs={"itemprop": "name"})[0])
         image = common.parseDOM(story, "img", attrs={"itemprop": "image"}, ret="src")[0]
 
-        sources = common.parseDOM(content, "script", attrs={"type": "text/javascript"}, ret="src")
+        #sources = common.parseDOM(content, "script", attrs={"type": "text/javascript"}, ret="src")
         itemprop_genre = common.parseDOM(story, "span", attrs={"itemprop": "genre"})
         genres = self.encode(', '.join(common.parseDOM(itemprop_genre, 'a')))
 
         desc = self.encode(common.parseDOM(story, "div", attrs={"style": "display:inline;"})[0])
-        link = self.getVideoSource(sources[-1])
+        link = self.getVideoSource(content)
 
         # for i, script in enumerate(scripts):
         #    print "%d #########" % i
@@ -252,13 +252,21 @@ class OnlineLife():
 
         xbmcplugin.endOfDirectory(self.handle, True)
 
-    def getVideoSource(self, url):
-        url = url.replace('//www.', 'http://')
+    def getVideoID(self, html):
+        container = common.parseDOM(html, "div", attrs={"id": "mklink-text"})[0]
+        string = common.parseDOM(html, "a", ret="id")[0]
+        return string.split('-')[-1]
+
+    def getVideoSource(self, html):
+        id = self.getVideoID(html)
+        url = 'http://www.online-life.me/js.php?id=%s' % id
+
         request = urllib2.Request(url)
         request.add_header('Referer', 'http://www.online-life.me/')
+        request.add_header('Host', 'www.online-life.me')        
         response = urllib2.urlopen(request).read()
-
-        # print response
+        # link = URLParser().parse(response)[0]
+        # print link
         return URLParser().parse(response)[0]
 
     def listGenres(self, url):
