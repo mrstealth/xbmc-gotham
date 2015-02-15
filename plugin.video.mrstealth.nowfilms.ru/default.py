@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Writer (c) 2012, MrStealth
-# Rev. 2.0.4
+# Rev. 2.0.5
 # -*- coding: utf-8 -*-
 
 import os
@@ -294,82 +294,73 @@ class NowFilms():
     def search(self, keyword, unified):
         self.showErrorMessage('Not yet implemented')
 
-        # keyword = translit.rus(keyword) if unified else self.getUserInput()
-        # unified_search_results = []
+    def search(self, keyword, unified):
+        keyword = translit.rus(keyword) if unified else self.getUserInput()
+        unified_search_results = []
 
-        # if keyword:
-        #     url = 'http://kinoprosmotr.net/index.php?do=search'
+        if keyword:      
+            url = 'http://nowfilms.ru/index.php?do=search'
 
-        #     # Advanced search: titles only
-        #     values = {
-        #         "beforeafter": "after",
-        #         "catlist[]": 0,
-        #         "do": "search",
-        #         "full_search": "1",
-        #         "replyless": "0",
-        #         "replylimit": "0",
-        #         "resorder": "desc",
-        #         "result_from": "1",
-        #         "result_num": "50",
-        #         "search_start": "1",
-        #         "searchdate": "0",
-        #         "searchuser": "",
-        #         "showposts": "0",
-        #         "sortby": "date",
-        #         "story": keyword,
-        #         "subaction": "search",
-        #         "titleonly": "3"
-        #     }
+            # Advanced search: titles only
+            values = {
+                "beforeafter":  "after",
+                "catlist[]":    0,
+                "do" :          "search",
+                "full_search":  1,
+                "replyless":    0,
+                "replylimit":   0,
+                "resorder":     "desc",
+                "result_from":  1,
+                "search_start": 1,
+                "searchdate" :  0,
+                "searchuser":   "",
+                "showposts":    0,
+                "sortby":       "date",
+                "story" :       keyword,
+                "subaction":    "search",
+                "titleonly":    0
+            }
 
-        #     headers = {
-        #         "Referer" : 'http://kinoprosmotr.net/index.php?do=search',
-        #         "User-Agent" : "Mozilla/5.0 (X11; Linux x86_64; rv:25.0) Gecko/20100101 Firefox/25.0"
-        #     }
+            headers = {
+                "Host" : "nowfilms.ru",
+                "Referer" : 'http://nowfilms.ru/index.php?do=search',
+                "User-Agent" : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:35.0) Gecko/20100101 Firefox/35.0"
+            }
 
-        #     data = urllib.urlencode(values)
-        #     request = urllib2.Request(url, data, headers)
-        #     response = urllib2.urlopen(request)
+            # Send request to server
+            request = urllib2.Request(url, urllib.urlencode(values), headers)
+            response = urllib2.urlopen(request)
+            content = response.read()
 
-        #     containers = common.parseDOM(response.read(), "div", attrs={"class": "search_item clearfix"})
-        #     search_item_prev = common.parseDOM(containers, "div", attrs={"class": "search_item_prev"})
-        #     search_item_inner = common.parseDOM(containers, "div", attrs={"class": "search_item_inner"})
+            movies = common.parseDOM(content, "div", attrs={"class": "new_movie3"})
+            titles = common.parseDOM(movies, "span", attrs={"class": "new_movinfo1"})
+            link_container = common.parseDOM(movies, "span", attrs={"class": "new_movie8"}) 
+            links = common.parseDOM(link_container, "a",  ret="href")
 
-        #     print containers
+            image_container = common.parseDOM(movies, "span", attrs={"class": "new_movie4 oops"}) 
+            images = common.parseDOM(image_container, "img",  ret="src")
 
-        #     descriptions = common.parseDOM(search_item_inner, "div")
 
-        #     header = common.parseDOM(search_item_inner, "h3")
-        #     gcont = common.parseDOM(search_item_inner, "span")
+            if unified:
+                self.log("Perform unified search and return results")
 
-        #     titles = common.parseDOM(header, "a")
-        #     links = common.parseDOM(header, "a", ret="href")
-        #     images = common.parseDOM(search_item_prev, "img", ret="src")
+                for i, title in enumerate(titles):
+                    unified_search_results.append({'title':  self.encode(self.strip(title)), 'url': links[i], 'image': self.url + images[i], 'plugin': self.id})
 
-        #     if unified:
-        #         self.log("Perform unified search and return results")
-        #         for i, title in enumerate(titles):
-        #             image = self.url + images[i]
-        #             unified_search_results.append({'title': self.encode(title), 'url': links[i], 'image': image, 'plugin': self.id})
+                UnifiedSearch().collect(unified_search_results)
 
-        #         UnifiedSearch().collect(unified_search_results)
+            else:
+                for i, title in enumerate(titles):
+                    uri = sys.argv[0] + '?mode=show&url=%s' % links[i]
+                    item = xbmcgui.ListItem(self.encode(self.strip(title)), thumbnailImage=self.url + images[i])
+                    xbmcplugin.addDirectoryItem(self.handle, uri, item, True)
 
-        #     else:
-        #         for i, title in enumerate(titles):
-        #             image = self.url + images[i]
-        #             print image
-        #             genres = self.encode(', '.join(common.parseDOM(gcont[i], "a")))
-        #             desc = self.encode(common.stripTags(descriptions[i]))
-        #             uri = sys.argv[0] + '?mode=show&url=%s' % links[i]
-        #             item = xbmcgui.ListItem(self.encode(title), iconImage=self.icon, thumbnailImage=image)
-        #             item.setInfo(type='Video', infoLabels={'title': self.encode(title), 'genre': genres, 'plot': desc})
+                xbmc.executebuiltin('Container.SetViewMode(50)')
+                xbmcplugin.endOfDirectory(self.handle, True)
 
-        #             xbmcplugin.addDirectoryItem(self.handle, uri, item, True)
+        else:
+            self.menu()
 
-        #         xbmc.executebuiltin('Container.SetViewMode(50)')
-        #         xbmcplugin.endOfDirectory(self.handle, True)
-
-        # else:
-        #     self.menu()
 
 
     # *** Add-on helpers

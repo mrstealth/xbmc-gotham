@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Writer (c) 2012, MrStealth
-# Rev. 2.0.4
+# Rev. 2.0.5
 # -*- coding: utf-8 -*-
 
 import os
@@ -349,7 +349,10 @@ class OnlineLife():
         if keyword:
             url = 'http://go.mail.ru/search_site?fr=main&p=1&aux=Abd67k&q=%s&x=0&y=0' % keyword
             request = urllib2.Request(url)
+            request.add_header('Host', 'go.mail.ru')
             request.add_header('Referer', 'http://www.online-life.me/')
+            request.add_header('User-Agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:35.0) Gecko/20100101 Firefox/35.0')
+            
             response = urllib2.urlopen(request).read()
 
             container = common.parseDOM(response, "ul", attrs={"class": "result js-result"})
