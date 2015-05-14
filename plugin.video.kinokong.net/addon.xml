@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.mrstealth.nowfilms.ru" name="NowFilms.ru (UnifiedSearch)" version="2.0.5" provider-name="MrStealth">
+<addon id="plugin.video.kinokong.net" name="Kinokong.net (UnifiedSearch)" version="1.0.0" provider-name="MrStealth">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.xbmc.helpers" version="2.0.0"/>
@@ -9,9 +9,8 @@
     <provides>video</provides>
   </extension>
   <extension point="xbmc.addon.metadata">
-    <summary>NowFilms.ru</summary>
+    <summary>Kinokong.net</summary>
     <description>For personal use only</description>
     <platform>all</platform>
-    <broken>deprecated</broken>
   </extension>
 </addon>
