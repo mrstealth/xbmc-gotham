@@ -54,7 +54,7 @@ class URLParser():
 
 class OnlineLife():
     def __init__(self):
-        self.id = 'plugin.video.online-life.ru'
+        self.id = 'plugin.video.online-life.cc'
         self.addon = xbmcaddon.Addon(self.id)
         self.icon = self.addon.getAddonInfo('icon')
         self.path = self.addon.getAddonInfo('path')
@@ -62,7 +62,7 @@ class OnlineLife():
 
         self.language = self.addon.getLocalizedString
         self.handle = int(sys.argv[1])
-        self.url = 'http://www.online-life.ru'
+        self.url = 'http://www.online-life.cc'
 
         self.favorites = MyFavorites(self.id)
 
@@ -106,7 +106,7 @@ class OnlineLife():
         item = xbmcgui.ListItem("[B][COLOR=FF00FFF0]%s[/COLOR][/B]" % self.language(1000), thumbnailImage=self.icon)
         xbmcplugin.addDirectoryItem(self.handle, uri, item, True)
 
-        uri = sys.argv[0] + '?mode=%s&url=%s' % ("category", "http://www.online-life.ru/kino-multserial/")
+        uri = sys.argv[0] + '?mode=%s&url=%s' % ("category", "http://www.online-life.cc/kino-multserial/")
         item = xbmcgui.ListItem("[B][COLOR=FF00FFF0]%s[/COLOR][/B]" % self.language(1004), thumbnailImage=self.icon)
         xbmcplugin.addDirectoryItem(self.handle, uri, item, True)
 
@@ -255,15 +255,21 @@ class OnlineLife():
     def getVideoID(self, html):
         container = common.parseDOM(html, "div", attrs={"id": "mklink-text"})[0]
         string = common.parseDOM(html, "a", ret="id")[0]
+
+        print "***** STRING %s" % string
         return string.split('-')[-1]
 
     def getVideoSource(self, html):
         id = self.getVideoID(html)
-        url = 'http://www.online-life.me/js.php?id=%s' % id
+
+        print "***** ID %s" % id
+        url = 'http://www.online-life.cc/js.php?id=%s' % id
+
+        print "***** URL %s" % url
 
         request = urllib2.Request(url)
-        request.add_header('Referer', 'http://www.online-life.me/')
-        request.add_header('Host', 'www.online-life.me')        
+        request.add_header('Referer', 'http://www.online-life.cc/')
+        request.add_header('Host', 'www.online-life.cc')        
         response = urllib2.urlopen(request).read()
         # link = URLParser().parse(response)[0]
         # print link
@@ -276,7 +282,7 @@ class OnlineLife():
         titles = common.parseDOM(container, "a", attrs={"class": "link1"})
         links = common.parseDOM(container, "a", attrs={"class": "link1"}, ret="href")
 
-        uri = sys.argv[0] + '?mode=category&url=%s' % "http://www.online-life.ru/kino-new/"
+        uri = sys.argv[0] + '?mode=category&url=%s' % "http://www.online-life.cc/kino-new/"
         item = xbmcgui.ListItem(self.language(1007), thumbnailImage=self.icon)
         xbmcplugin.addDirectoryItem(self.handle, uri, item, True)
 
@@ -286,7 +292,7 @@ class OnlineLife():
             item = xbmcgui.ListItem(self.encode(title), thumbnailImage=self.icon)
             xbmcplugin.addDirectoryItem(self.handle, uri, item, True)
 
-        uri = sys.argv[0] + '?mode=category&url=%s' % "http://www.online-life.ru/kino-tv/"
+        uri = sys.argv[0] + '?mode=category&url=%s' % "http://www.online-life.cc/kino-tv/"
         item = xbmcgui.ListItem(self.language(1006), thumbnailImage=self.icon)
         xbmcplugin.addDirectoryItem(self.handle, uri, item, True)
 
@@ -350,7 +356,7 @@ class OnlineLife():
             url = 'http://go.mail.ru/search_site?fr=main&p=1&aux=Abd67k&q=%s&x=0&y=0' % keyword
             request = urllib2.Request(url)
             request.add_header('Host', 'go.mail.ru')
-            request.add_header('Referer', 'http://www.online-life.me/')
+            request.add_header('Referer', 'http://www.online-life.cc/')
             request.add_header('User-Agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:35.0) Gecko/20100101 Firefox/35.0')
             
             response = urllib2.urlopen(request).read()
