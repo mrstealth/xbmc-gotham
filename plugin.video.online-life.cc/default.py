@@ -110,12 +110,14 @@ class OnlineLife():
         item = xbmcgui.ListItem("[B][COLOR=FF00FFF0]%s[/COLOR][/B]" % self.language(1004), thumbnailImage=self.icon)
         xbmcplugin.addDirectoryItem(self.handle, uri, item, True)
 
-        self.getCategoryItems(self.url, 0)
+        self.getCategoryItems('http://www.online-life.cc/kino-new/', 1)
         xbmcplugin.endOfDirectory(self.handle, True)
 
     def getCategoryItems(self, url, page):
-        page_url = self.url if page == 0 else "%s/page/%s/" % (url, str(int(page)))
+        page_url = url if page == 0 else "%s/page/%s/" % (url, str(int(page)))
         response = common.fetchPage({"link": page_url})
+
+        print page_url
 
         if response["status"] == 200:
             container = common.parseDOM(response["content"], "div", attrs={"id": "container"})
@@ -139,7 +141,10 @@ class OnlineLife():
                 description = self.encode(common.stripTags(common.parseDOM(extras[i], "div", attrs={"class": "description"})[0]))
                 genres = self.encode(', '.join(common.parseDOM(media_data, "a")))
 
-                rating = float(ratings[i]) / 10
+                try:
+                    rating = float(ratings[i]) / 10
+                except IndexError:
+                    rating = 0;
 
                 uri = sys.argv[0] + '?mode=show&url=%s' % link
                 item = xbmcgui.ListItem(title, thumbnailImage=image)
@@ -282,6 +287,13 @@ class OnlineLife():
         titles = common.parseDOM(container, "a", attrs={"class": "link1"})
         links = common.parseDOM(container, "a", attrs={"class": "link1"}, ret="href")
 
+
+        cats = common.parseDOM(container, "li", attrs={"class": "pull-right nodrop"})
+
+
+        titles += common.parseDOM(cats, "a")
+        links += common.parseDOM(cats, "a", ret="href")
+
         uri = sys.argv[0] + '?mode=category&url=%s' % "http://www.online-life.cc/kino-new/"
         item = xbmcgui.ListItem(self.language(1007), thumbnailImage=self.icon)
         xbmcplugin.addDirectoryItem(self.handle, uri, item, True)
@@ -292,9 +304,9 @@ class OnlineLife():
             item = xbmcgui.ListItem(self.encode(title), thumbnailImage=self.icon)
             xbmcplugin.addDirectoryItem(self.handle, uri, item, True)
 
-        uri = sys.argv[0] + '?mode=category&url=%s' % "http://www.online-life.cc/kino-tv/"
-        item = xbmcgui.ListItem(self.language(1006), thumbnailImage=self.icon)
-        xbmcplugin.addDirectoryItem(self.handle, uri, item, True)
+        # uri = sys.argv[0] + '?mode=category&url=%s' % "http://www.online-life.cc/kino-tv/"
+        # item = xbmcgui.ListItem(self.language(1006), thumbnailImage=self.icon)
+        # xbmcplugin.addDirectoryItem(self.handle, uri, item, True)
 
         xbmcplugin.endOfDirectory(self.handle, True)
 
