@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Writer (c) 2012, MrStealth
-# Rev. 2.0.4
+# Rev. 2.0.5
 # -*- coding: utf-8 -*-
 
 import os
