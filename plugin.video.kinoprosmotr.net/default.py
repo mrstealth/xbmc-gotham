@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Writer (c) 2012, MrStealth
-# Rev. 2.0.5
+# Rev. 2.0.6
 # -*- coding: utf-8 -*-
 
 import os
@@ -161,13 +161,20 @@ class Kinoprosmotr():
             values = common.parseDOM(movie, "param", ret="value")
             link = None
 
+
+            scripts = common.parseDOM(response['content'], 'script')
+
+            for script in scripts:
+                if('.mp4' in script):
+                    link = script.split('file:"')[-1].split('",')[0]
+
             if values:
                 values = values[4].split('&')
 
                 for value in values:
                     if 'file' in value:
                         link = value.replace('amp;file=', '').replace(' ', '')
-            else:
+            if not values and not link:
                 self.showErrorMessage('No media source (YouTube trailer)')
                 return False
 
@@ -180,6 +187,8 @@ class Kinoprosmotr():
 
             image = common.parseDOM(poster, "img", ret="src")[0]
             image = self.url+image
+
+
             year = infos[2].split('</span>')[-1]
 
             title = "%s (%s)" % (self.encode(common.parseDOM(infos[0], "strong")[0]), year)
@@ -188,9 +197,8 @@ class Kinoprosmotr():
 
             if link:
                 self.log("This is a film")
-                url = values[2].replace('amp;file=', '').replace(' ', '')
 
-                uri = sys.argv[0] + '?mode=play&url=%s' % url
+                uri = sys.argv[0] + '?mode=play&url=%s' % link
                 item = xbmcgui.ListItem(title,  iconImage=image)
                 item.setInfo(type='Video', infoLabels={'title': title, 'genre': genres, 'plot': desc, 'overlay': xbmcgui.ICON_OVERLAY_WATCHED, 'playCount': 0})
                 item.setProperty('IsPlayable', 'true')
