@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Writer (c) 2012, MrStealth
-# Rev. 2.0.1
+# Rev. 2.0.2
 # -*- coding: utf-8 -*-
 
 import urllib, re, sys
@@ -504,7 +504,9 @@ def showItem(url, thumbnail):
 
                 for episode in episods:
                     title = ('%s (%s)') % (episode['comment'], season['comment'])
-                    uri = sys.argv[0] + '?mode=play&url=%s' % episode['file']
+
+                    url = episode['file'].replace('http:/kino-dom.tv/', '')
+                    uri = sys.argv[0] + '?mode=play&url=%s' % url
 
                     item = xbmcgui.ListItem(title, thumbnailImage=image)
 
@@ -519,7 +521,8 @@ def showItem(url, thumbnail):
 
             for episode in playlist:
                 title = episode['comment']
-                uri = sys.argv[0] + '?mode=play&url=%s' % episode['file']
+                url = episode['file'].replace('http:/kino-dom.tv/', '')
+                uri = sys.argv[0] + '?mode=play&url=%s' % url
 
                 item = xbmcgui.ListItem(title, thumbnailImage=image)
 
@@ -562,6 +565,7 @@ def showItem(url, thumbnail):
 
 
 def playItem(url):
+    print url
     item = xbmcgui.ListItem(path = url)
     item.setProperty('mimetype', 'video/x-flv')
     xbmcplugin.setResolvedUrl(pluginhandle, True, item)
