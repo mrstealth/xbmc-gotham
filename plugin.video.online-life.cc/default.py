@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Writer (c) 2012, MrStealth
-# Rev. 2.0.5
+# Rev. 1.0.2
 # -*- coding: utf-8 -*-
 
 import os
@@ -179,7 +179,7 @@ class OnlineLife():
         genres = self.encode(', '.join(common.parseDOM(itemprop_genre, 'a')))
 
         desc = self.encode(common.parseDOM(story, "div", attrs={"style": "display:inline;"})[0])
-        link = self.getVideoSource(content)
+        link = self.getVideoSource(url)
 
         # for i, script in enumerate(scripts):
         #    print "%d #########" % i
@@ -257,15 +257,11 @@ class OnlineLife():
 
         xbmcplugin.endOfDirectory(self.handle, True)
 
-    def getVideoID(self, html):
-        container = common.parseDOM(html, "div", attrs={"id": "mklink-text"})[0]
-        string = common.parseDOM(html, "a", ret="id")[0]
+    def getVideoID(self, url):
+        return url.split('/')[-1].split('-')[0]
 
-        print "***** STRING %s" % string
-        return string.split('-')[-1]
-
-    def getVideoSource(self, html):
-        id = self.getVideoID(html)
+    def getVideoSource(self, url):
+        id = self.getVideoID(url)
 
         print "***** ID %s" % id
         url = 'http://www.online-life.cc/js.php?id=%s' % id
