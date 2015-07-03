@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Writer (c) 2012, MrStealth
-# Rev. 2.0.2
+# Rev. 2.0.4
 # -*- coding: utf-8 -*-
 
 import os
@@ -122,7 +122,8 @@ class Kinoprosmotr():
                 genre = self.encode(', '.join(common.parseDOM(info[2], "a")))
                 year = info[1].split('</span>')[-1]
                 desc = common.stripTags(self.encode(descs[i]))
-                rating = int(ratings[i])/10 if ratings[i] > 0 else None
+
+                rating = float(ratings[i]) if ratings[i] > 0 else None
 
                 try:
                     tmp = year.split(' ')
