@@ -20,7 +20,7 @@
 # */
 #
 # Writer (c) 2014, MrStealth
-# Rev. 2.0.2
+# Rev. 2.0.3
 
 import os, urllib, urllib2, sys #, socket, cookielib, errno
 import xbmc, xbmcplugin,xbmcgui,xbmcaddon
@@ -145,15 +145,15 @@ class VideoKub():
         print "Get video %s" % url
         response = common.fetchPage({"link": url})
         content = response["content"]
-        scripts = common.parseDOM(response["content"], "script", attrs={"type": "text/javascript"})
+        scripts = common.parseDOM(response["content"], "script", attrs={"class": "splayer"})
         title = common.parseDOM(response["content"], "div", attrs={"class": "title"})[0]
         urls = []
 
         for script in scripts:
             if 'mp4' in script:
-                urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', script)
+                urls = re.findall('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+.mp4', script)
 
-        link = urls[0]
+        link = urls[-1]
 
         print "link %s" % link
 
