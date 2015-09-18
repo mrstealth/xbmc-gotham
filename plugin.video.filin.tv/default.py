@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Writer (c) 2012, MrStealth
-# Rev. 2.0.3
+# Rev. 2.0.4
 # -*- coding: utf-8 -*-
 
 import urllib, re, sys
@@ -528,7 +528,7 @@ def showItem(url, thumbnail):
 
             for episode in playlist:
                 title = episode['comment']
-                url = episode['file'].replace('http:/kino-dom.tv/', '')
+                url = episode['file'].replace('http:/kino-dom.tv/', '').replace('playlistJSON.php', code)
                 uri = sys.argv[0] + '?mode=play&url=%s' % url
 
                 item = xbmcgui.ListItem(title, thumbnailImage=image)
