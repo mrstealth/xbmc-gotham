@@ -1,6 +1,6 @@
 #!/usr/bin/python
-# Writer (c) 2012, MrStealth
-# Rev. 2.0.5
+# Writer (c) 2014, MrStealth
+# Rev. 1.0.1
 # -*- coding: utf-8 -*-
 
 import os
@@ -130,7 +130,7 @@ class NowFilms():
 
                 xbmcplugin.addDirectoryItem(self.handle, uri, item, True)
 
-        if pagenav and not per_page < 25:
+        if pagenav and not per_page < 15:
             uri = sys.argv[0] + '?mode=%s&url=%s&page=%s' % ("category", url, str(int(page) + 1))
             item = xbmcgui.ListItem(self.language(9000), thumbnailImage=self.inext, iconImage=self.inext)
             xbmcplugin.addDirectoryItem(self.handle, uri, item, True)
