@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Writer (c) 2012, MrStealth
-# Rev. 2.0.2
+# Rev. 2.0.3
 # -*- coding: utf-8 -*-
 
 import urllib, re, sys
@@ -485,7 +485,12 @@ def showItem(url, thumbnail):
         # wrong json format
         # url2json = "http://kino-dom.tv/01f551e61970b9645b5465460daccdfe/play/institutblagorodnihdevic2_mp4.xml.json"
 
+        # http://st2.kino-dom.tv/s/c4e4f5c266109990611aadc0dedb9f55/Naciyz_lostfilm_mp4/s01e01.mp4
+        # http://st2.kino-dom.tv/s/playlistJSON.php/Naciyz_lostfilm_mp4/s01e01.mp4
+
+        code = playlist.split('/')[1]
         response = common.fetchPage({"link":url2json})["content"]
+
 
         try:
           playlist = json.loads(response)['playlist']
@@ -505,7 +510,9 @@ def showItem(url, thumbnail):
                 for episode in episods:
                     title = ('%s (%s)') % (episode['comment'], season['comment'])
 
-                    url = episode['file'].replace('http:/kino-dom.tv/', '')
+                    print episode['file']
+
+                    url = episode['file'].replace('http:/kino-dom.tv/', '').replace('playlistJSON.php', code)
                     uri = sys.argv[0] + '?mode=play&url=%s' % url
 
                     item = xbmcgui.ListItem(title, thumbnailImage=image)
