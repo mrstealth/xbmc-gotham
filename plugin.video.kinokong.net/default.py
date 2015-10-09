@@ -1,6 +1,6 @@
 #!/usr/bin/python
-# Writer (c) 2014, MrStealth
-# Rev. 1.0.1
+# Writer (c) 2014-2015, MrStealth
+# Rev. 1.0.2
 # -*- coding: utf-8 -*-
 
 import os
@@ -28,7 +28,7 @@ except:
     xbmc.executebuiltin("XBMC.Notification(%s,%s, %s)" % ("Warning", 'Please install UnifiedSearch add-on!', str(10 * 1000)))
 
 
-class NowFilms():
+class Kinokong():
     def __init__(self):
         self.id = 'plugin.video.kinokong.net'
         self.addon = xbmcaddon.Addon(self.id)
@@ -103,9 +103,9 @@ class NowFilms():
 
         if response["status"] == 200:
             content = common.parseDOM(response["content"], "div", attrs={"id": "container"})
-            items = common.parseDOM(content, "div", attrs={"class": "item"})
+            items = common.parseDOM(content, "div", attrs={"class": "owl-item"})
 
-            link_container = common.parseDOM(items, "div", attrs={"class": "main-sliders-title"}) 
+            link_container = common.parseDOM(items, "div", attrs={"class": "main-sliders-title"})
             titles = common.parseDOM(link_container, "a")
             links = common.parseDOM(link_container, "a", ret="href")
             images = common.parseDOM(items, "img", ret="src")
@@ -150,11 +150,11 @@ class NowFilms():
         print source
 
         title = self.encode(common.parseDOM(container, "h1")[0])
-        image = common.parseDOM(container, "img", attrs={"id": "imgbigp"}, ret="src")[0] 
+        image = common.parseDOM(container, "img", attrs={"id": "imgbigp"}, ret="src")[0]
 
         # infos_cont = common.parseDOM(container, "ul", attrs={"class": "reset"})[-1]
         quality = common.parseDOM(container, "div", attrs={"class": "full-quality"})
-        # description = common.parseDOM(container, "div", attrs={"class": "full_r disable_select"})[0]  
+        # description = common.parseDOM(container, "div", attrs={"class": "full_r disable_select"})[0]
 
         # quality = common.parseDOM(quality_cont, "b")
         # year = common.parseDOM(infos_cont, "li")[2]
@@ -177,11 +177,11 @@ class NowFilms():
         # rating = float(rating[0]) if rating else 0
 
         labels = {
-            'title': title, 
-            'genre': 'genres', 
-            'plot': 'description', 
-            'playCount': 0, 
-            'year': 1970, 
+            'title': title,
+            'genre': 'genres',
+            'plot': 'description',
+            'playCount': 0,
+            'year': 1970,
             'rating' : 0
         }
 
@@ -216,7 +216,7 @@ class NowFilms():
                         url = episode['file'].split(',')[-1] if '_720' in episode['file'] else episode['file'].split(',')[0]
                         uri = sys.argv[0] + '?mode=play&url=%s' % url
                         item = xbmcgui.ListItem(common.stripTags(etitle), iconImage=image, thumbnailImage=image)
- 
+
                         item.setInfo(type='Video', infoLabels=labels)
                         item.setProperty('IsPlayable', 'true')
                         xbmcplugin.addDirectoryItem(self.handle, uri, item, False)
@@ -295,7 +295,7 @@ class NowFilms():
         keyword = translit.rus(keyword) if unified else self.getUserInput()
         unified_search_results = []
 
-        if keyword:      
+        if keyword:
             url = 'http://kinokong.net/index.php?do=search'
 
 
@@ -333,7 +333,7 @@ class NowFilms():
             content = common.parseDOM(response, "div", attrs={"id": "container"})
             items = common.parseDOM(content, "div", attrs={"class": "item"})
 
-            link_container = common.parseDOM(items, "div", attrs={"class": "main-sliders-title"}) 
+            link_container = common.parseDOM(items, "div", attrs={"class": "main-sliders-title"})
             titles = common.parseDOM(link_container, "a")
             links = common.parseDOM(link_container, "a", ret="href")
             images = common.parseDOM(items, "img", ret="src")
@@ -395,5 +395,5 @@ class NowFilms():
 #     def strip(self, links):
 #         return [l.replace('"', '') for l in links]
 
-nowfilms = NowFilms()
-nowfilms.main()
+Kinokong = Kinokong()
+Kinokong.main()
