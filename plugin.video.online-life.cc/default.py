@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Writer (c) 2012, MrStealth
-# Rev. 1.0.2
+# Rev. 1.0.3
 # -*- coding: utf-8 -*-
 
 import os
@@ -174,23 +174,11 @@ class OnlineLife():
         title = self.encode(common.parseDOM(story, "span", attrs={"itemprop": "name"})[0])
         image = common.parseDOM(story, "img", attrs={"itemprop": "image"}, ret="src")[0]
 
-        #sources = common.parseDOM(content, "script", attrs={"type": "text/javascript"}, ret="src")
         itemprop_genre = common.parseDOM(story, "span", attrs={"itemprop": "genre"})
         genres = self.encode(', '.join(common.parseDOM(itemprop_genre, 'a')))
 
         desc = self.encode(common.parseDOM(story, "div", attrs={"style": "display:inline;"})[0])
         link = self.getVideoSource(url)
-
-        # for i, script in enumerate(scripts):
-        #    print "%d #########" % i
-
-        #    if 'www.online-life.me' in source:
-        #     print script
-
-        # try:
-        #     link = parser.parse(scripts[8])[0]
-        # except IndexError:
-        #     link = parser.parse(scripts[9])[0]
 
         movie = link if not link.endswith('.txt') else None
         season = link if link.endswith('.txt') else None
@@ -211,6 +199,7 @@ class OnlineLife():
         elif season:
             print "This is a season %s" % season
             response = common.fetchPage({"link": season})
+            print response
             overlay = xbmcgui.ICON_OVERLAY_WATCHED
 
             if response["status"] == 200:
@@ -225,9 +214,6 @@ class OnlineLife():
                         for episode in episods:
                             etitle = "%s (%s)" % (episode['comment'], common.stripTags(season['comment']))
                             url = episode['file']
-
-                            # print "**** %s" % url
-
                             uri = sys.argv[0] + '?mode=play&url=%s' % urllib.quote_plus(url)
                             item = xbmcgui.ListItem(etitle, thumbnailImage=image)
 
@@ -264,17 +250,28 @@ class OnlineLife():
         id = self.getVideoID(url)
 
         print "***** ID %s" % id
-        url = 'http://www.online-life.cc/js.php?id=%s' % id
-
-        print "***** URL %s" % url
+        url = "http://dterod.com/js.php?id=%s" % id
+        print "************ URL %s" % url
 
         request = urllib2.Request(url)
         request.add_header('Referer', 'http://www.online-life.cc/')
-        request.add_header('Host', 'www.online-life.cc')        
+        request.add_header('Host', 'www.online-life.cc')
         response = urllib2.urlopen(request).read()
-        # link = URLParser().parse(response)[0]
-        # print link
+
+        # print "dterod"
+        # print URLParser().parse(response)[0]
+        #
+        # url = 'http://www.online-life.cc/js.php?id=%s' % id
+        #
+        # request = urllib2.Request(url)
+        # request.add_header('Referer', 'http://www.online-life.cc/')
+        # request.add_header('Host', 'www.online-life.cc')
+        # response = urllib2.urlopen(request).read()
+        #
+        # print "online"
+        # print URLParser().parse(response)[0]
         return URLParser().parse(response)[0]
+
 
     def listGenres(self, url):
         response = common.fetchPage({"link": url})
@@ -354,7 +351,7 @@ class OnlineLife():
                 keyword = kbd.getText()
         return keyword
 
-    def search(self, keyword, unified):
+    # def search(self, keyword, unified):
         self.log("*** Search: unified %s" % unified)
 
         keyword = translit.rus(keyword) if unified else self.getUserInput()
@@ -366,7 +363,7 @@ class OnlineLife():
             request.add_header('Host', 'go.mail.ru')
             request.add_header('Referer', 'http://www.online-life.cc/')
             request.add_header('User-Agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:35.0) Gecko/20100101 Firefox/35.0')
-            
+
             response = urllib2.urlopen(request).read()
 
             container = common.parseDOM(response, "ul", attrs={"class": "result js-result"})
@@ -394,6 +391,87 @@ class OnlineLife():
                         title = titles[i].encode('utf-8')
                         link = links[i]
                         image = images[i]
+
+                        uri = sys.argv[0] + '?mode=show&url=%s' % link
+                        item = xbmcgui.ListItem(title, thumbnailImage=image)
+
+                        self.favorites.addContextMenuItem(item, {
+                            'title': title,
+                            'url': link,
+                            'image': image,
+                            'playable': False,
+                            'action': 'add',
+                            'plugin': self.id
+                        })
+
+                        xbmcplugin.addDirectoryItem(self.handle, uri, item, True)
+
+                    xbmc.executebuiltin('Container.SetViewMode(52)')
+                else:
+                    item = xbmcgui.ListItem(self.language(2001), iconImage=self.icon, thumbnailImage=self.icon)
+                    xbmcplugin.addDirectoryItem(self.handle, '', item, True)
+
+                xbmcplugin.endOfDirectory(self.handle, True)
+        else:
+            self.menu()
+
+    def search(self, keyword, unified):
+        self.log("*** Search: unified %s" % unified)
+
+        keyword = translit.rus(keyword) if unified else self.getUserInput()
+        unified_search_results = []
+
+        if keyword:
+            url = 'http://www.online-life.cc/?do=search'
+
+            # Advanced search: titles only
+            values = {
+                "beforeafter": "after",
+                "catlist[]": "0",
+                "do": "search",
+                "full_search": "1",
+                "replyless": "0",
+                "replylimit": "0",
+                "resorder": "desc",
+                "result_from":  "1",
+                "search_start": "1",
+                "searchdate": "0",
+                "searchuser": "",
+                "showposts": "0",
+                "sortby": "date",
+                "story": keyword,
+                "subaction": "search",
+                "titleonly": "3"
+            }
+
+            data = urllib.urlencode(values)
+            request = urllib2.Request(url, data)
+            response = urllib2.urlopen(request).read()
+
+            container = common.parseDOM(response, "div", attrs={"id": "container"})
+            posts = common.parseDOM(container, "div", attrs={"class": "custom-post"})
+
+            if unified:
+                self.log("Perform unified search and return results")
+
+                for i, post in enumerate(posts):
+                    poster = common.parseDOM(post, "div", attrs={"class": "custom-poster"})
+                    title = self.encode(common.stripTags(common.parseDOM(post, "a")[0]))
+                    link = common.parseDOM(post, "a", ret="href")[0]
+                    image = common.parseDOM(post, "img", ret="src")[0]
+
+
+                    unified_search_results.append({'title':  title, 'url': link, 'image': image, 'plugin': self.id})
+
+                UnifiedSearch().collect(unified_search_results)
+
+            else:
+                if posts:
+                    for i, post in enumerate(posts):
+                        poster = common.parseDOM(post, "div", attrs={"class": "custom-poster"})
+                        title = self.encode(common.stripTags(common.parseDOM(post, "a")[0]))
+                        link = common.parseDOM(post, "a", ret="href")[0]
+                        image = common.parseDOM(post, "img", ret="src")[0]
 
                         uri = sys.argv[0] + '?mode=show&url=%s' % link
                         item = xbmcgui.ListItem(title, thumbnailImage=image)
