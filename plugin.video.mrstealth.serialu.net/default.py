@@ -211,10 +211,10 @@ class SerialuNet():
         response = self.get(url)
 
         container = common.parseDOM(response, "div", attrs={"class": "main-container"})
-        genres = common.parseDOM(container, "div", attrs={"class": "h-menu2"})
+        genres = common.parseDOM(container, "ul", attrs={"class": "h-menu2"})
 
-        titles = common.parseDOM(genres, "a")[1:]
-        links = common.parseDOM(genres, "a", ret="href")[1:]
+        titles = common.parseDOM(genres, "a")
+        links = common.parseDOM(genres, "a", ret="href")
 
         print links
 
