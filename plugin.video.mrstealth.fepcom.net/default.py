@@ -5,6 +5,7 @@
 
 import os
 import sys
+import re
 
 import urllib
 import urllib2
@@ -26,6 +27,17 @@ translit = translit.Translit(encoding='cp1251')
 sys.path.append(os.path.dirname(__file__)+ '/../plugin.video.unified.search')
 from unified_search import UnifiedSearch
 
+class URLParser():
+    def parse(self, string):
+        links = re.findall(r'(?:http://|www.).*?["]', string)
+        return list(set(self.filter(links)))
+
+    def filter(self, links):
+        links = self.strip(links)
+        return [l for l in links if l.endswith('.flv') or l.endswith('.mp4') or l.endswith('.txt')]
+
+    def strip(self, links):
+        return [l.replace('"', '') for l in links]
 
 class Fepcom():
     def __init__(self):
@@ -149,7 +161,6 @@ class Fepcom():
             navigation = common.parseDOM(container, "div", attrs={"class": "navigation"})
             items = 0
 
-            print len(posts)
             for i, post in enumerate(posts):
                 items += 1
 
@@ -190,27 +201,32 @@ class Fepcom():
         videos = common.parseDOM(post, "div", attrs={"class": "video"})
         players = common.parseDOM(videos, "object")
 
-        for i, player in enumerate(players):
-            uhash = common.parseDOM(player, "param", attrs={"name": "flashvars"}, ret="file")[0].split('&')[0]
+        iframe = common.parseDOM(videos, 'iframe', ret="src")[0]
+        print iframe
 
-            # get encoded URL from playlist/file HASH
-            uppod_url = uppod.decodeSourceURL(uhash)
-            image = image if 'http' in image else self.url+image
+        links = self.getIframeVideoLink(iframe)
+        #print URLParser().parse(response)[0]
 
-            uri = sys.argv[0] + '?mode=play&url=%s' % uppod_url
-            info = {'title': title, 'overlay': xbmcgui.ICON_OVERLAY_WATCHED, 'playCount': 0}
+        if len(links) > 1:
+            link = links[-1]
+        else:
+            link = links[0]
 
-            if len(players) > 1:
-                item = xbmcgui.ListItem("%s (source %i)" % (title, i+1), thumbnailImage=image)
-            else:
-                 item = xbmcgui.ListItem("%s" % title, thumbnailImage=image)
-
-            item.setInfo(type='Video', infoLabels=info)
-            item.setProperty('IsPlayable', 'true')
-            xbmcplugin.addDirectoryItem(self.handle, uri, item, False)
+        image = image if 'http' in image else self.url+image
+        uri = sys.argv[0] + '?mode=play&url=%s' % link
+        info = {'title': title, 'overlay': xbmcgui.ICON_OVERLAY_WATCHED, 'playCount': 0}
+        item = xbmcgui.ListItem("%s" % title, thumbnailImage=image)
+        item.setInfo(type='Video', infoLabels=info)
+        item.setProperty('IsPlayable', 'true')
+        xbmcplugin.addDirectoryItem(self.handle, uri, item, False)
 
         xbmc.executebuiltin('Container.SetViewMode(52)')
         xbmcplugin.endOfDirectory(self.handle, True)
+
+    def getIframeVideoLink(self, url):
+        print url
+        response = common.fetchPage({"link": url})['content']
+        return URLParser().parse(response)[0].split(' or ')
 
     def listGenres(self, url):
         print "list genres"
@@ -245,9 +261,9 @@ class Fepcom():
 
     def playItem(self, url):
         print "*** play url %s" % url
-        if ' or ' in url: 
+        if ' or ' in url:
             url = url.split(' or ')[-1]
-            
+
         item = xbmcgui.ListItem(path=url)
         xbmcplugin.setResolvedUrl(self.handle, True, item)
 

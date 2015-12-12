@@ -115,7 +115,7 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.mrstealth.fepcom.net" name="Fepcom.net (UnifiedSearch)" version="2.0.2" provider-name="mrstealth">
+<addon id="plugin.video.mrstealth.fepcom.net" name="Fepcom.net (UnifiedSearch)" version="2.0.3" provider-name="mrstealth">
   <requires>
     <import addon="xbmc.python" version="2.1.0"/>
     <import addon="script.module.xbmc.helpers" version="2.0.0"/>
