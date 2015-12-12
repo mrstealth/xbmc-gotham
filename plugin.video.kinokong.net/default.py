@@ -8,6 +8,7 @@ import urllib
 import urllib2
 import sys
 import re
+import socket
 import xbmc
 import xbmcplugin
 import xbmcgui
@@ -18,6 +19,8 @@ common = XbmcHelpers
 
 import Translit as translit
 translit = translit.Translit(encoding='cp1251')
+
+socket.setdefaulttimeout(120)
 
 
 # UnifiedSearch module
@@ -75,20 +78,12 @@ class Kinokong():
 
     def menu(self):
         uri = sys.argv[0] + '?mode=%s&url=%s' % ("search", self.url)
-        item = xbmcgui.ListItem("[COLOR=FF00FF00][%s][/COLOR]" % self.language(2000), thumbnailImage=self.icon)
+        item = xbmcgui.ListItem("[COLOR=FF00FF00]%s[/COLOR]" % self.language(2000), thumbnailImage=self.icon)
         xbmcplugin.addDirectoryItem(self.handle, uri, item, True)
 
         uri = sys.argv[0] + '?mode=%s&url=%s' % ("genres", self.url)
         item = xbmcgui.ListItem("[COLOR=FF00FFF0]%s[/COLOR]" % self.language(1000), thumbnailImage=self.icon)
         xbmcplugin.addDirectoryItem(self.handle, uri, item, True)
-
-        # uri = sys.argv[0] + '?mode=%s&url=%s' % ("category", "http://kinoprosmotr.net/serial/")
-        # item = xbmcgui.ListItem("[COLOR=FF00FFF0]%s[/COLOR]" % self.language(1001), thumbnailImage=self.icon)
-        # xbmcplugin.addDirectoryItem(self.handle, uri, item, True)
-
-        # uri = sys.argv[0] + '?mode=%s&url=%s' % ("category", "http://kinoprosmotr.net/mult/")
-        # item = xbmcgui.ListItem("[COLOR=FF00FFF0]%s[/COLOR]" % self.language(1002), thumbnailImage=self.icon)
-        # xbmcplugin.addDirectoryItem(self.handle, uri, item, True)
 
         self.getCategoryItems('http://kinokong.net/films/novinki', 1)
 
@@ -147,34 +142,14 @@ class Kinokong():
         js_container = common.parseDOM(response["content"], "div", attrs={"class": "section"})
         source = common.parseDOM(js_container, "script", attrs={"type": "text/javascript"})[0]
 
-        print source
-
         title = self.encode(common.parseDOM(container, "h1")[0])
         image = common.parseDOM(container, "img", attrs={"id": "imgbigp"}, ret="src")[0]
-
-        # infos_cont = common.parseDOM(container, "ul", attrs={"class": "reset"})[-1]
         quality = common.parseDOM(container, "div", attrs={"class": "full-quality"})
-        # description = common.parseDOM(container, "div", attrs={"class": "full_r disable_select"})[0]
 
-        # quality = common.parseDOM(quality_cont, "b")
-        # year = common.parseDOM(infos_cont, "li")[2]
-        # genres = common.parseDOM(infos_cont, "li")[-1]
-        # rating = common.parseDOM(container, "span", attrs={"class": "new_movkin"})
 
         movie = source.split('file":"')[-1].split('"};')[0] if 'file":"' in source else None
         playlist = source.split(',pl:"')[-1].split('"};')[0] if ',pl:"' in source else None
         playlist = playlist.split('",')[0] if playlist and '",' in playlist else playlist
-
-        print movie
-        print playlist
-
-
-        # title = self.encode(title)
-        # quality = quality[0] if quality else ''
-        # image = self.url+image
-        # genres = self.encode(genres)
-        # description = common.stripTags(self.encode(description))
-        # rating = float(rating[0]) if rating else 0
 
         labels = {
             'title': title,
@@ -186,12 +161,19 @@ class Kinokong():
         }
 
         if not playlist:
-            links = movie.split(',') if ',' in movie else [movie]
+            links = movie.replace(' or ', ',').split(',') if(',' or ' or ') in movie else [movie]
             image = image if 'http' in image else self.url+image
-            quality = quality[0] if quality else ''
+            format = quality[0] if quality else ''
 
             for i, link in enumerate(links):
-                link_title = "%s [%dp - %s]" % (title, ((i*240)+480), quality)
+                if '720p_' in link:
+                    quality = link.replace('.mp4', 'P').split('720p_')[-1]
+                else:
+                    quality = '480P'
+
+                link_title = "%s [%s - %s]" % (title, quality, format)
+                link_title = link_title.replace(self.language(5002).encode('utf-8'), '').replace('720 hd', '')
+
                 uri = sys.argv[0] + '?mode=play&url=%s' % link
                 item = xbmcgui.ListItem(link_title,  iconImage=image, thumbnailImage=image)
 
