@@ -253,7 +253,11 @@ class Kinokong():
 
     def playItem(self, url):
         print "*** play url %s" % url
-        item = xbmcgui.ListItem(path=url)
+        if ' or ' in url:
+            link = url.split(' or ')[-1]
+        else:
+            link = url
+        item = xbmcgui.ListItem(path=link)
         xbmcplugin.setResolvedUrl(self.handle, True, item)
 
     def getUserInput(self):
