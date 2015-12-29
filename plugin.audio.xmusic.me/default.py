@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Writer (c) 2012, MrStealth
-# Rev. 1.0.3
+# Rev. 2.0.1
 # -*- coding: utf-8 -*-
 
 import os, sys, urllib, urllib2, cookielib
@@ -82,27 +82,30 @@ class Xmusic():
     playlist = common.parseDOM(page["content"], "ul", attrs = { "id" : "playlist" })
 
     artists = common.parseDOM(playlist, "em")
-    titles = common.parseDOM(playlist, "span")
+    titles = common.parseDOM(playlist, "i")
     links = common.parseDOM(playlist, "li", attrs = { "class":"track" }, ret="data-download")
-    durations = common.parseDOM(playlist, "i")
+    durations = common.parseDOM(playlist, "span", attrs = { "class":"player-duration" })
 
     style = common.parseDOM(page["content"], "h2", attrs = { "class":"xtitle" })
     playlist_title = style if style else 'XMusic.me playlist'
     navigation = common.parseDOM(page["content"], "li", attrs={"class": "listalka1-l"})
 
-    for i, title in enumerate(titles):
-      song = "%s - %s"%(title, artists[i])
+    for i, link in enumerate(links):
+      title = common.parseDOM(titles[i], "a")[0]
+      artist = common.parseDOM(artists[i], "a")[0]
 
-      uri = sys.argv[0] + '?mode=%s&url=%s'%('play', links[i])
+      song = "%s - %s"%(title, artist)
+
+      uri = sys.argv[0] + '?mode=%s&url=%s'%('play', link)
       item = xbmcgui.ListItem(song, iconImage=self.icon, thumbnailImage=self.icon)
 
       item.setInfo(type='music',
         infoLabels = {
           'title': song,
-          'artist' : artists[i],
+          'artist' : artist,
           'album' : style,
           'genre': 'muzebra.com',
-          'duration' : self.duration(durations[i].split('</a>')[-1]),
+          'duration' : self.duration(durations[i]),
           'rating' : '5'
         }
       )
