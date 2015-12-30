@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Writer (c) 2012, MrStealth
-# Rev. 2.0.1
+# Rev. 2.0.2
 # -*- coding: utf-8 -*-
 
 import os, sys, urllib, urllib2, cookielib
@@ -42,8 +42,7 @@ class Xmusic():
       self.getPlaylists(url)
     elif mode == None:
       self.menu()
-
-
+        
   def menu(self):
     self.getMusicStyles()
 
@@ -53,6 +52,10 @@ class Xmusic():
     links = common.parseDOM(styles, "a", ret="href")
     titles = common.parseDOM(styles, "a")
 
+    uri = sys.argv[0] + '?mode=%s'%('search')
+    item = xbmcgui.ListItem('SEARCH', iconImage=self.icon)
+    xbmcplugin.addDirectoryItem(self.handle, uri, item, True)
+      
     for i, title in enumerate(titles):
       link = self.url+ '/top/' if links[i] == '/' else self.url+links[i]
       uri = sys.argv[0] + '?mode=%s&url=%s'%('songs', urllib.quote_plus(link))
@@ -173,10 +176,16 @@ class Xmusic():
 
   def search(self):
     query = common.getUserInput(self.language(1000), "")
-    url = self.url + '/search/?q=' + query
+    url = self.url + '/public/api.search.php'
 
     if query != None:
-      self.getSongs(url, self.language(1000))
+      post_data = {}
+      post_data['q'] = query
+      post_data['type'] = 'q'
+      params = {"link": url, "post_data": post_data, "hide_post_data": "true"}
+      page = common.fetchPage(params)
+      try: self.getSongs(self.url + page['content'])
+      except: main()
     else:
       main()
         
