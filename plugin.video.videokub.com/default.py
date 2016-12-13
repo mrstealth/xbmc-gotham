@@ -20,7 +20,7 @@
 # */
 #
 # Writer (c) 2014, MrStealth
-# Rev. 2.0.3
+# Rev. 2.0.3.1
 
 import os, urllib, urllib2, sys #, socket, cookielib, errno
 import xbmc, xbmcplugin,xbmcgui,xbmcaddon
