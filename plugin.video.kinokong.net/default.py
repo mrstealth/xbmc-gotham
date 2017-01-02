@@ -1,6 +1,6 @@
 #!/usr/bin/python
-# Writer (c) 2014-2015, MrStealth
-# Rev. 1.0.2
+# Writer (c) 2014-2016, MrStealth
+# Rev. 1.0.5
 # -*- coding: utf-8 -*-
 
 import os
@@ -44,7 +44,7 @@ class Kinokong():
         self.handle = int(sys.argv[1])
         self.params = sys.argv[2]
 
-        self.url = 'http://kinokong.net'
+        self.url = 'http://kinokong.biz'
 
         self.inext = os.path.join(self.path, 'resources/icons/next.png')
         self.debug = False
@@ -85,7 +85,7 @@ class Kinokong():
         item = xbmcgui.ListItem("[COLOR=FF00FFF0]%s[/COLOR]" % self.language(1000), thumbnailImage=self.icon)
         xbmcplugin.addDirectoryItem(self.handle, uri, item, True)
 
-        self.getCategoryItems('http://kinokong.net/films/novinki', 1)
+        self.getCategoryItems('http://kinokong.biz/films/novinki', 1)
 
         xbmc.executebuiltin('Container.SetViewMode(52)')
         xbmcplugin.endOfDirectory(self.handle, True)
@@ -112,7 +112,7 @@ class Kinokong():
                 per_page += 1
                 title = self.strip(self.encode(title))
 
-                image = images[i] if 'http' in images[i] else self.url+images[i]
+                image = images[(i+1)*3-1] if 'http' in images[(i+1)*3-1] else self.url+images[(i+1)*3-1]
 
                 genres_cont = common.parseDOM(items[i], "em")
                 genres = common.parseDOM(genres_cont, "a")
@@ -120,6 +120,8 @@ class Kinokong():
                 description = self.encode(descs[i])
 
                 uri = sys.argv[0] + '?mode=show&url=%s' % (links[i])
+		self.log("image: %s"  % image)
+		self.log("uri: %s"  % uri)
                 item = xbmcgui.ListItem(title, iconImage=image, thumbnailImage=image)
                 item.setInfo(type='Video', infoLabels={'title': title, 'genre': genre, 'plot': description})
 
@@ -140,7 +142,7 @@ class Kinokong():
         response = common.fetchPage({"link": url})
         container = common.parseDOM(response["content"], "div", attrs={"id": "container"})
         js_container = common.parseDOM(response["content"], "div", attrs={"class": "section"})
-        source = common.parseDOM(js_container, "script", attrs={"type": "text/javascript"})[0]
+        source = common.parseDOM(js_container, "script", attrs={"type": "text/javascript"})[6]
 
         title = self.encode(common.parseDOM(container, "h1")[0])
         image = common.parseDOM(container, "img", attrs={"id": "imgbigp"}, ret="src")[0]
@@ -230,12 +232,12 @@ class Kinokong():
         genres = common.parseDOM(menu, "li")
 
         links = [
-          'http://kinokong.net/films',
-          'http://kinokong.net/films/novinki',
-          'http://kinokong.net/serial',
-          'http://kinokong.net/multfilm',
-          'http://kinokong.net/anime',
-          'http://kinokong.net/dokumentalnyy'
+          'http://kinokong.biz/films',
+          'http://kinokong.biz/films/novinki',
+          'http://kinokong.biz/serial',
+          'http://kinokong.biz/multfilm',
+          'http://kinokong.biz/anime',
+          'http://kinokong.biz/dokumentalnyy'
         ]
 
         for i, genre in enumerate(genres[:-1]):
@@ -282,7 +284,7 @@ class Kinokong():
         unified_search_results = []
 
         if keyword:
-            url = 'http://kinokong.net/index.php?do=search'
+            url = 'http://kinokong.biz/index.php?do=search'
 
 
 
@@ -307,8 +309,8 @@ class Kinokong():
             }
 
             headers = {
-                "Host" : "kinokong.net",
-                "Referer" : 'http://kinokong.net/index.php?do=search',
+                "Host" : "kinokong.biz",
+                "Referer" : 'http://kinokong.biz/index.php?do=search',
                 "User-Agent" : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:35.0) Gecko/20100101 Firefox/35.0"
             }
 
