@@ -278,7 +278,7 @@
   <extension point="xbmc.python.module" library="lib"/>
 </addon>
 
-<addon id='script.module.translit' version='2.0.0.1' name='Translit for xbmc plugins' provider-name='mrstealth'>
+<addon id='script.module.translit' version='2.0.1' name='Translit for xbmc plugins' provider-name='mrstealth'>
   <requires>
     <import addon="xbmc.python" version="2.1.0" />
   </requires>
