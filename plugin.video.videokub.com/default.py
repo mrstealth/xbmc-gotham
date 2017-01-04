@@ -20,7 +20,7 @@
 # */
 #
 # Writer (c) 2014, MrStealth
-# Rev. 2.0.3.2
+# Rev. 2.0.3.3
 
 import os, urllib, urllib2, sys #, socket, cookielib, errno
 import xbmc, xbmcplugin,xbmcgui,xbmcaddon
@@ -145,14 +145,13 @@ class VideoKub():
 
         print "Get videos for page_url %s" % page_url
         response = common.fetchPage({"link": page_url})
-        content = common.parseDOM(response["content"], "div", attrs={"class": "list_videos"})
-        videos = common.parseDOM(content, "div", attrs={"class": "short"})
+        
 
-        links = common.parseDOM(videos, "a", attrs={"class": "kt_imgrc"}, ret='href')
-        titles = common.parseDOM(videos, "a", attrs={"class": "kt_imgrc"}, ret='title')
-        images = common.parseDOM(videos, "img", attrs={"class": "thumb"}, ret='src')
+        links = common.parseDOM(response["content"], "a", attrs={"itemprop": "url"}, ret='href')
+        titles = common.parseDOM(response["content"], "span", attrs={"class": "item-title"})
+        images = common.parseDOM(response["content"], "img", attrs={"class": "thumb"}, ret='src')
 
-        durations = common.parseDOM(videos, "span", attrs={"class": "time"})
+        durations = common.parseDOM(response["content"], "span", attrs={"class": "item-time"})
 
         for i, title in enumerate(titles):
             duration = durations[i].split(':')[0]
@@ -172,7 +171,7 @@ class VideoKub():
     def show(self, url):
 		print "Get video %s" % url
 		response = common.fetchPage({"link": url})
-		title = common.parseDOM(response["content"], "div", attrs={"class": "title"})[0]
+		title = common.parseDOM(response["content"], "title")[0]
 		content = response["content"]
 		if 'youtube.com/embed' in content:
 			videoId = re.findall('youtube.com/embed/(.*?)[\"\']', content)[0]
@@ -325,14 +324,12 @@ class VideoKub():
             request.add_header('User-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36')
             response = urllib2.urlopen(request)
             resp = response.read()
-            content = common.parseDOM(resp, "div", attrs={"class": "list_videos"})
-            videos = common.parseDOM(content, "div", attrs={"class": "short"})
 
-            links = common.parseDOM(videos, "a", attrs={"class": "kt_imgrc"}, ret='href')
-            titles = common.parseDOM(videos, "a", attrs={"class": "kt_imgrc"}, ret='title')
-            images = common.parseDOM(videos, "img", attrs={"class": "thumb"}, ret='src')
+            links = common.parseDOM(resp, "a", attrs={"itemprop": "url"}, ret='href')
+            titles = common.parseDOM(resp, "span", attrs={"class": "item-title"})
+            images = common.parseDOM(resp, "img", attrs={"class": "thumb"}, ret='src')
 
-            durations = common.parseDOM(videos, "span", attrs={"class": "time"})
+            durations = common.parseDOM(resp, "span", attrs={"class": "item-time"})
             
             pages = common.parseDOM(resp, "div", attrs={"class": "pagination navigation"})
             pages = common.parseDOM(pages, "div", attrs={"class": "block_content"})

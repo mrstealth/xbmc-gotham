@@ -1,6 +1,6 @@
 #!/usr/bin/python
-# Writer (c) 2014-2016, MrStealth
-# Rev. 1.0.5
+# Writer (c) 2014-2016, MrStealth, dandy
+# Rev. 1.0.6
 # -*- coding: utf-8 -*-
 
 import os
@@ -168,8 +168,9 @@ class Kinokong():
             format = quality[0] if quality else ''
 
             for i, link in enumerate(links):
-                if '720p_' in link:
-                    quality = link.replace('.mp4', 'P').split('720p_')[-1]
+                if '_720' in link:
+		    quality = '720P'
+#                    quality = link.replace('.mp4', 'P').split('_720')[-1]
                 else:
                     quality = '480P'
 
@@ -309,7 +310,7 @@ class Kinokong():
             }
 
             headers = {
-                "Host" : "kinokong.biz",
+                "Host" : "kinokong.net",
                 "Referer" : 'http://kinokong.biz/index.php?do=search',
                 "User-Agent" : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:35.0) Gecko/20100101 Firefox/35.0"
             }
