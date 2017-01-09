@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Writer (c) 2014-2016, MrStealth, dandy
-# Rev. 1.0.6
+# Rev. 1.0.7
 # -*- coding: utf-8 -*-
 
 import os
@@ -310,7 +310,7 @@ class Kinokong():
             }
 
             headers = {
-                "Host" : "kinokong.net",
+                "Host" : "kinokong.biz",
                 "Referer" : 'http://kinokong.biz/index.php?do=search',
                 "User-Agent" : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.10; rv:35.0) Gecko/20100101 Firefox/35.0"
             }
