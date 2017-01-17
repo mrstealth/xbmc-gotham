@@ -20,7 +20,7 @@
 # */
 #
 # Writer (c) 2014, MrStealth
-# Rev. 2.0.3.3
+# Rev. 2.0.3.4
 
 import os, urllib, urllib2, sys #, socket, cookielib, errno
 import xbmc, xbmcplugin,xbmcgui,xbmcaddon
@@ -170,7 +170,8 @@ class VideoKub():
 
     def show(self, url):
 		print "Get video %s" % url
-		response = common.fetchPage({"link": url})
+		response = common.fetchPage({"link": url.replace('https','http')})
+		print response
 		title = common.parseDOM(response["content"], "title")[0]
 		content = response["content"]
 		if 'youtube.com/embed' in content:

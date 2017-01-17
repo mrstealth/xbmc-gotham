@@ -235,7 +235,7 @@
   </extension>
 </addon>
 
-<addon id="plugin.video.videokub.com" name="VideoKub.com" version="2.0.3.3" provider-name="mrstealth">
+<addon id="plugin.video.videokub.com" name="VideoKub.com" version="2.0.3.4" provider-name="mrstealth">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
         <import addon="script.module.xbmc.helpers" version="1.0.0"/>
