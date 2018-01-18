@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # Writer (c) 2012, MrStealth
-# Rev. 2.0.2
+# Rev. 2.0.3
 # -*- coding: utf-8 -*-
 
 import os, sys, urllib, urllib2, cookielib
@@ -19,7 +19,7 @@ class Xmusic():
 
     self.language = self.addon.getLocalizedString
     self.handle = int(sys.argv[1])
-    self.url = 'http://xmusic.me'
+    self.url = 'http://ixmusic.me'
 
     self.icover = os.path.join(self.path, 'resources/icons/cover.png')
     self.inext = os.path.join(self.path, 'resources/icons/next.png')
